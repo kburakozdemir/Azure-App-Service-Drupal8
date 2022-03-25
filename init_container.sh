@@ -17,6 +17,9 @@ cat /etc/motd
 # Get environment variables to show up in SSH session
 eval $(printenv | awk -F= '{print "export " $1"="$2 }' >> /etc/profile)
 
+test -d /home/site/wwwroot/sites/default/files && echo "exists" || mkdir -p /home/site/wwwroot/sites/default/files
+test -f /var/www/html/docroot/sites/default/settings.php && echo "exists" || cp /home/settings.php /var/www/html/docroot/sites/default/settings.php
+
 service ssh start
 service rsyslog start
 sed -i "s/{PORT}/$PORT/g" /etc/apache2/apache2.conf

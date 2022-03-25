@@ -144,18 +144,26 @@ ENV WEBSITE_INSTANCE_ID localInstance
 ENV PATH ${PATH}:/var/www/html
 
 
-WORKDIR /var/www/html
+WORKDIR /var/www/html/docroot
 RUN git clone -b $BRANCH https://$GIT_TOKEN@github.com/$GIT_REPO.git .
 
 # Add directories for public and private files
 RUN mkdir -p  /home/site/wwwroot/sites/default/files \
     && mkdir -p  /home/site/wwwroot/sites/default/files/private \
-    && ln -s /home/site/wwwroot/sites/default/files  /var/www/html/docroot/sites/default/files \
-    && ln -s /home/site/wwwroot/sites/default/files/private /var/www/html/docroot/sites/default/files/private
+		# && mkdir -p /var/www/html/docroot/sites/default/files \
+		# && mkdir -p /var/www/html/docroot/sites/default/files/private \
+    && ln -s /home/site/wwwroot/sites/default/files  /var/www/html/docroot/sites/default/files
+    # && ln -s /home/site/wwwroot/sites/default/files/private /var/www/html/docroot/sites/default/files/private
 
 ### Webroot permissions per www.drupal.org/node/244924#linux-servers ###
+WORKDIR /home/site/wwwroot/sites
+RUN chown -R www-data:www-data .
+RUN find . -type d -exec chmod u=rwx,g=rx,o= '{}' \;
+RUN find . -type f -exec chmod u=rw,g=r,o= '{}' \;
+
 WORKDIR /var/www/html/docroot
-RUN chown -R root:www-data .
+# RUN chown -R root:www-data .
+RUN chown -R www-data:www-data .
 RUN find . -type d -exec chmod u=rwx,g=rx,o= '{}' \;
 RUN find . -type f -exec chmod u=rw,g=r,o= '{}' \;
 # For sites/default/files directory, permissions come from
