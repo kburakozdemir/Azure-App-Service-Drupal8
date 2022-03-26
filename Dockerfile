@@ -127,6 +127,12 @@ RUN mv drush.phar /usr/local/bin/drush
 RUN drush init -y
 ### END Drush install ###
 
+### begin install composer
+RUN wget -O /usr/local/bin/composer https://getcomposer.org/download/2.2.7/composer.phar
+RUN chmod 755 /usr/local/bin/composer
+RUN chmod +x /usr/local/bin/composer
+### end install composer
+
 # =========
 # App Service configurations
 # Source https://github.com/Azure/app-service-builtin-images/blob/master/php/7.2.1-apache/Dockerfile
@@ -144,13 +150,16 @@ ENV WEBSITE_INSTANCE_ID localInstance
 ENV PATH ${PATH}:/var/www/html
 
 
-WORKDIR /var/www/html/docroot
+WORKDIR /var/www/html
 RUN git clone -b $BRANCH https://$GIT_TOKEN@github.com/$GIT_REPO.git .
+
+WORKDIR /var/www/html
+RUN composer install --no-interaction
 
 # Add directories for public and private files
 RUN mkdir -p  /home/site/wwwroot/sites/default/files \
     && mkdir -p  /home/site/wwwroot/sites/default/files/private \
-		# && mkdir -p /var/www/html/docroot/sites/default/files \
+		&& mkdir -p /var/www/html/docroot/sites/default \
 		# && mkdir -p /var/www/html/docroot/sites/default/files/private \
     && ln -s /home/site/wwwroot/sites/default/files  /var/www/html/docroot/sites/default/files
     # && ln -s /home/site/wwwroot/sites/default/files/private /var/www/html/docroot/sites/default/files/private
@@ -161,7 +170,7 @@ RUN chown -R www-data:www-data .
 RUN find . -type d -exec chmod u=rwx,g=rx,o= '{}' \;
 RUN find . -type f -exec chmod u=rw,g=r,o= '{}' \;
 
-WORKDIR /var/www/html/docroot
+WORKDIR /var/www/html
 # RUN chown -R root:www-data .
 RUN chown -R www-data:www-data .
 RUN find . -type d -exec chmod u=rwx,g=rx,o= '{}' \;
