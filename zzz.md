@@ -34,7 +34,7 @@ az webapp config appsettings set --resource-group kbo --name abcazurez --setting
 
 docker build -t newcomposerimage:latest \
  --build-arg GIT_TOKEN=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 \
- --build-arg BRANCH=drush2 \
+ --build-arg BRANCH=drush3 \
  --build-arg GIT_REPO=kburakozdemir/test-drupal-composer \
  .
 
