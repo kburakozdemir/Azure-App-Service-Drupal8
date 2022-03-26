@@ -121,7 +121,7 @@ RUN apt-get update && apt-get install -y libmemcached-dev zlib1g-dev \
 RUN apt-get update && apt-get install -y memcached
 
 ### Begin Drush install ###
-RUN wget https://github.com/drush-ops/drush/releases/download/8.1.13/drush.phar
+RUN wget https://github.com/drush-ops/drush/releases/download/8.4.10/drush.phar
 RUN chmod +x drush.phar
 RUN mv drush.phar /usr/local/bin/drush
 RUN drush init -y
